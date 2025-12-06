@@ -2,64 +2,25 @@
 #include <WiFi.h>
 
 const char * ssid = "virus5";
-const char * password = "a1b2c3d4";
+const char * password = "12345678";
 
 WiFiServer server(80);
 
 void conectarRedWifi(){
-   WiFi.begin(ssid, password);
-   Serial.print("Estableciendo conexion WiFi..");
-   while(WiFi.status() != WL_CONNECTED) {
-     delay(1000);
-     Serial.print(".");
-   }
-   Serial.println("\nConectado a la red WiFi");
-}
-
-String getTipoCrifrado(wifi_auth_mode_t tipoCifrado){
-    switch(tipoCifrado){
-      case (WIFI_AUTH_OPEN):
-              return "Abierta";
-      case (WIFI_AUTH_WEP):
-              return "WEP";
-      case (WIFI_AUTH_WPA_PSK):
-              return "WPA_PSK";
-      case (WIFI_AUTH_WPA2_PSK):
-              return "WPA2_PSK";
-      case (WIFI_AUTH_WPA_WPA2_PSK):
-              return "WPA_WPA2_PSK";
-      case (WIFI_AUTH_WPA2_ENTERPRISE):
-              return "WPA2_ENTERPRISE";
-      case (WIFI_AUTH_MAX):  
-              return "WPA_MAX";      
-    }
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
   }
-void escanearRedes(){
-  int numberOfNetworks = WiFi.scanNetworks();
-  Serial.print("Numero de redes encontradas: ");
-  Serial.println(numberOfNetworks);
-  for (int i = 0; i < numberOfNetworks; i++) {
-    Serial.print("Nombre de red: ");
-    Serial.println(WiFi.SSID(i));
-    Serial.print("Fuerza de la señal: ");
-    Serial.println(WiFi.RSSI(i));
-    Serial.print("Direccion MAC: ");
-    Serial.println(WiFi.BSSIDstr(i));
-    Serial.print("Tipo de cifrado: ");
-    String tipoCifradoDescription = getTipoCifrado(WiFi.encryptionType(i));
-    Serial.println(tipoCifradoDescription);
-    Serial.println("-----------------------");
-  }
+  Serial.println("Conectado a la red WiFi");
 }
-
-void setup() {
+void setup() { // Conexion serial a 115200 baudos: 9600, 19200, 38400, 57600, 115200
   Serial.begin(115200);
   pinMode(2, OUTPUT);
-  escanearRedes();
   conectarRedWifi();
-  Serial.print("IP local: ");
+  Serial.print("IP Local: "); // Imprime la direccion IP asignada por el router
   Serial.println(WiFi.localIP());
-  server.begin();
+  server.begin(); // Inicia el servidor en el puerto 80
 }
 
 void loop() {
